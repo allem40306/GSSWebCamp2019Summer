@@ -84,4 +84,15 @@ function addBook(){
     location.reload();
 }
 
-function deleteBook(){}
+function deleteBook(e){
+    var target = this.dataItem((e.target).closest("tr"));
+    var targetId = target.BookId;
+    for(var i = 0; i != bookDataFromLocalStorage.length; ++i){
+        if(bookDataFromLocalStorage[i].BookId == targetId){
+            bookDataFromLocalStorage.splice(i, 1);
+            localStorage.setItem("bookData",JSON.stringify(bookDataFromLocalStorage));
+            break;
+        }
+    }
+    location.reload();
+}

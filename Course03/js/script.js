@@ -74,7 +74,12 @@ function addBook(){
         return;
     }
     console.log("ADD");
-    bookDataFromLocalStorage.push({BookId: bookDataFromLocalStorage[bookDataFromLocalStorage.length - 1].BookId + 1, BookName: $("#book_name").val(), BookCategory: $("#book_category").data("kendoDropDownList").text(), BookAuthor: $("#book_author").val(), BookBoughtDate: $("#bought_datepicker").val()});
+    var mx = 0;
+    for(var i = 0; i != bookDataFromLocalStorage.length; ++i){
+        if(mx < bookDataFromLocalStorage[i].BookId)
+            mx = bookDataFromLocalStorage[i].BookId;
+    }
+    bookDataFromLocalStorage.push({BookId: mx + 1, BookName: $("#book_name").val(), BookCategory: $("#book_category").data("kendoDropDownList").text(), BookAuthor: $("#book_author").val(), BookBoughtDate: $("#bought_datepicker").val()});
     localStorage.setItem("bookData",JSON.stringify(bookDataFromLocalStorage));
     location.reload();
 }

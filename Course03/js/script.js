@@ -3,6 +3,19 @@ var bookDataFromLocalStorage = [];
 
 $(function(){
     loadBookData();
+    var BookAddWindow = $("#bookadd_window");
+    var BookAddWindowButton = $("#bookadd_window_button");
+    BookAddWindowButton.click(function(){
+        BookAddWindow.data("kendoWindow").open();
+    });
+    BookAddWindow.kendoWindow({
+        width: "600px",
+        title: "新增書籍",
+        visible: false,
+        actions: [
+            "Close"
+        ],
+    }).data("kendoWindow").center();
     var data = [
         {text:"資料庫",value:"database"},
         {text:"網際網路",value:"internet"},

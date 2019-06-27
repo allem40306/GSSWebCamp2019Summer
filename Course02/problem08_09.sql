@@ -1,25 +1,25 @@
 USE GSSWEB
 GO
--- 要包 TRAN
+-- �n�] TRAN
 
-INSERT INTO dbo.BOOK_LEND_RECORD ([BOOK_ID],[KEEPER_ID],[LEND_DATE],[CRE_DATE],[CRE_USR],[MOD_DATE],[MOD_USR])  Values (2004, N'0002','2017/07/31 00:00:00','2017/07/31 00:00:00',N'0002','2017/07/31 00:00:00',N'0002')-- KEEPERID用名子去找, lend_date = getdate()
---這題應該是要改BOOKID 2004的借閱紀錄
+INSERT INTO dbo.BOOK_LEND_RECORD ([BOOK_ID],[KEEPER_ID],[LEND_DATE],[CRE_DATE],[CRE_USR],[MOD_DATE],[MOD_USR])  Values (2004, N'0002','2017/07/31 00:00:00','2017/07/31 00:00:00',N'0002','2017/07/31 00:00:00',N'0002')-- KEEPERID�ΦW�l�h��, lend_date = getdate()
+--�o�D���ӬO�n��BOOKID 2004���ɾ\����
 
 UPDATE BOOK_LEND_RECORD
 SET LEND_DATE = '2019/01/02 00:00:00'
 WHERE KEEPER_ID = N'0002';
 
--- 三行要合併，不然很恐怖
+-- �T��n�X�֡A���M�ܮ���
 DELETE BOOK_LEND_RECORD WHERE KEEPER_ID = N'0002' AND BOOK_ID = 2004;
 
 /*
-SELECT Lend.BOOK_ID AS '書本ID',
-		FORMAT(Book.BOOK_BOUGHT_DATE, 'yyyy/MM/dd') AS '購買日期',
-		FORMAT(Lend.LEND_DATE, 'yyyy/MM/dd') AS '借閱日期', 
-		Class.BOOK_CLASS_ID + '-' + Class.BOOK_CLASS_NAME AS '書籍類別',
-		Mem.[USER_ID] + '-' + Mem.USER_CNAME + '(' + Mem.USER_ENAME + ')' AS '借閱人',
-		Status.CODE_ID + '-' + Status.CODE_NAME AS '狀態',
-		CONVERT(VARCHAR(5), Book.BOOK_AMOUNT) + '元' AS '購買金額'
+SELECT Lend.BOOK_ID AS '�ѥ�ID',
+		FORMAT(Book.BOOK_BOUGHT_DATE, 'yyyy/MM/dd') AS '�ʶR���',
+		FORMAT(Lend.LEND_DATE, 'yyyy/MM/dd') AS '�ɾ\���', 
+		Class.BOOK_CLASS_ID + '-' + Class.BOOK_CLASS_NAME AS '���y���O',
+		Mem.[USER_ID] + '-' + Mem.USER_CNAME + '(' + Mem.USER_ENAME + ')' AS '�ɾ\�H',
+		Status.CODE_ID + '-' + Status.CODE_NAME AS '���A',
+		CONVERT(VARCHAR(5), Book.BOOK_AMOUNT) + '��' AS '�ʶR���B'
 FROM dbo.BOOK_LEND_RECORD AS Lend 
 INNER JOIN dbo.MEMBER_M AS Mem
 	ON Mem.[USER_ID] = Lend.[KEEPER_ID]
@@ -29,7 +29,7 @@ INNER JOIN dbo.BOOK_CLASS AS Class
 	ON Book.BOOK_CLASS_ID = Class.BOOK_CLASS_ID
 INNER JOIN dbo.BOOK_CODE AS Status
 	ON Status.CODE_ID = Book.BOOK_STATUS
-WHERE Mem.[USER_CNAME] = '李四' 
-		AND Status.CODE_TYPE_DESC = '書籍狀態'
-ORDER BY 書本ID DESC;
+WHERE Mem.[USER_CNAME] = '���|' 
+		AND Status.CODE_TYPE_DESC = '���y���A'
+ORDER BY �ѥ�ID DESC;
 */

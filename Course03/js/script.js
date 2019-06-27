@@ -18,6 +18,9 @@ $(function(){
         change: onChange
     });
     $("#bought_datepicker").kendoDatePicker();
+    $("#book_add").kendoButton({
+        click: addBook
+    });
     $("#book_grid").kendoGrid({
         dataSource: {
             data: bookDataFromLocalStorage,
@@ -64,5 +67,16 @@ function loadBookData(){
 function onChange(){
     $(".book-image").attr("src", 'image/' + $("#book_category").val() + '.jpg');
 }
-  
+
+function addBook(){
+    if($("#book_name").val() == "" || $("#book_author").val() == ""){
+        alert("資料不完全");
+        return;
+    }
+    console.log("ADD");
+    bookDataFromLocalStorage.push({BookId: bookDataFromLocalStorage[bookDataFromLocalStorage.length - 1].BookId + 1, BookName: $("#book_name").val(), BookCategory: $("#book_category").data("kendoDropDownList").text(), BookAuthor: $("#book_author").val(), BookBoughtDate: $("#bought_datepicker").val()});
+    localStorage.setItem("bookData",JSON.stringify(bookDataFromLocalStorage));
+    location.reload();
+}
+
 function deleteBook(){}

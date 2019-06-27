@@ -4,11 +4,11 @@ var bookDataFromLocalStorage = [];
 $(function(){
     loadBookData();
     var data = [
-        {text:"資料庫",value:""},
-        {text:"網際網路",value:""},
-        {text:"應用系統整合",value:""},
-        {text:"家庭保健",value:""},
-        {text:"語言",value:""}
+        {text:"資料庫",value:"database"},
+        {text:"網際網路",value:"internet"},
+        {text:"應用系統整合",value:"system"},
+        {text:"家庭保健",value:"home"},
+        {text:"語言",value:"language"}
     ]
     $("#book_category").kendoDropDownList({
         dataTextField: "text",
@@ -61,6 +61,8 @@ function loadBookData(){
     }
 }
 
-function onChange(){}
+function onChange(){
+    $(".book-image").attr("src", 'image/' + $("#book_category").val() + '.jpg');
+}
   
 function deleteBook(){}

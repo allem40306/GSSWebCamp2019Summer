@@ -34,7 +34,7 @@ $(function(){
     $("#book_add").kendoButton({
         click: addBook
     });
-    $("#book_grid").kendoGrid({
+    var grid = $("#book_grid").kendoGrid({
         dataSource: {
             data: bookDataFromLocalStorage,
             schema: {
@@ -50,7 +50,7 @@ $(function(){
             },
             pageSize: 20,
         },
-        toolbar: kendo.template("<div class='book-grid-toolbar'><input class='book-grid-search' placeholder='我想要找......' type='text'></input></div>"),
+        toolbar: kendo.template("<div class='book-grid-toolbar'><input id='book_filter' class='book-grid-search' placeholder='我想要找......' type='text'></input></div>"),
         height: 550,
         sortable: true,
         pageable: {
@@ -65,7 +65,16 @@ $(function(){
             { field: "BookBoughtDate", title: "購買日期", width: "15%" },
             { command: { text: "刪除", click: deleteBook }, title: " ", width: "120px" }
         ]
-        
+    });
+    grid.find(".book-grid-search").on("keyup", function (e) {
+        var dataSource = grid.data("kendoGrid").dataSource;
+        var filtervalue = grid.find(".book-grid-search").val()
+        e.preventDefault();
+        dataSource.filter({
+            field: "BookName",
+            operator: "contains",
+            value: filtervalue
+        });
     });
 })
 

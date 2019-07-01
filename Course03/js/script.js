@@ -50,7 +50,7 @@ $(function(){
             },
             pageSize: 20,
         },
-        toolbar: kendo.template("<div class='book-grid-toolbar'><input id='book_filter' class='book-grid-search' placeholder='我想要找......' type='text'></input></div>"),
+        toolbar: kendo.template("<div class='book-grid-toolbar'><input id='book_filter' class='book-grid-search' placeholder='搜尋書籍名稱......' type='text'></input></div>"),
         height: 550,
         sortable: true,
         pageable: {
@@ -91,19 +91,20 @@ function onChange(){
 }
 
 function addBook(){
-    if($("#book_name").val() == "" || $("#book_author").val() == ""){
-        alert("資料不完全");
-        return;
+    var validator = $("#bookadd_form").kendoValidator().data("kendoValidator");
+    if(validator.validate()){
+        console.log("ADD");
+        var mx = 0;
+        for(var i = 0; i != bookDataFromLocalStorage.length; ++i){
+            if(mx < bookDataFromLocalStorage[i].BookId)
+                mx = bookDataFromLocalStorage[i].BookId;
+        }
+        bookDataFromLocalStorage.push({BookId: mx + 1, BookName: $("#book_name").val(), BookCategory: $("#book_category").data("kendoDropDownList").text(), BookAuthor: $("#book_author").val(), BookBoughtDate: $("#bought_datepicker").val()});
+        localStorage.setItem("bookData",JSON.stringify(bookDataFromLocalStorage));
+        location.reload();
+        alert("已新增書籍");
     }
-    console.log("ADD");
-    var mx = 0;
-    for(var i = 0; i != bookDataFromLocalStorage.length; ++i){
-        if(mx < bookDataFromLocalStorage[i].BookId)
-            mx = bookDataFromLocalStorage[i].BookId;
-    }
-    bookDataFromLocalStorage.push({BookId: mx + 1, BookName: $("#book_name").val(), BookCategory: $("#book_category").data("kendoDropDownList").text(), BookAuthor: $("#book_author").val(), BookBoughtDate: $("#bought_datepicker").val()});
-    localStorage.setItem("bookData",JSON.stringify(bookDataFromLocalStorage));
-    location.reload();
+    
 }
 
 function deleteBook(e){

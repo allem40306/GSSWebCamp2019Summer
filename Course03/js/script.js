@@ -108,6 +108,8 @@ function addBook(){
 }
 
 function deleteBook(e){
+    var answer = confirm("確定刪除")
+    if(!answer)return;
     var target = this.dataItem((e.target).closest("tr"));
     var targetId = target.BookId;
     for(var i = 0; i != bookDataFromLocalStorage.length; ++i){

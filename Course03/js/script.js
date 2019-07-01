@@ -30,7 +30,10 @@ $(function(){
         index: 0,
         change: onChange
     });
-    $("#bought_datepicker").kendoDatePicker();
+    var DatePicker = $("#bought_datepicker").kendoDatePicker({
+        format: 'dd/MM/yyyy',
+        value: new Date()
+    });
     $("#book_add").kendoButton({
         click: addBook
     });

@@ -108,7 +108,7 @@ function addBook(){
 }
 
 function deleteBook(e){
-    var answer = confirm("確定刪除")
+    var answer = confirm("確定刪除?")
     if(!answer)return;
     var target = this.dataItem((e.target).closest("tr"));
     var targetId = target.BookId;
@@ -120,4 +120,5 @@ function deleteBook(e){
         }
     }
     location.reload();
+    alert("已刪除書籍");
 }

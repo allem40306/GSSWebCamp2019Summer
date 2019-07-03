@@ -37,6 +37,9 @@ namespace Course04.Controllers
         [HttpGet()]
         public ActionResult AddBook()
         {
+            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
+            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
+            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
             return View(new Models.Book());
         }
 
@@ -44,6 +47,15 @@ namespace Course04.Controllers
         [HttpPost()]
         public ActionResult AddBook(Models.Book book)
         {
+            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
+            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
+            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
+            if (ModelState.IsValid)
+            {
+                Models.BookService bookService = new Models.BookService();
+                bookService.AddBook(book);
+                TempData["message"] = "存檔成功";
+            }
             return View(book);
         }
     }

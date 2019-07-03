@@ -82,5 +82,37 @@ namespace Course04.Models
             }
             return result;
         }
+
+        public int AddBook(Models.Book book)
+        {
+            string sql = @"INSERT INTO BOOK_DATA
+	                    (
+		                    BOOK_NAME, BOOK_AUTHOR, BOOK_PUBLISHER,
+		                    BOOK_NOTE, BOOK_BOUGHT_DATE, BOOK_CLASS_ID,
+                            BOOK_STATUS
+	                    )
+	                    VALUES
+	                    (
+		                    @BOOK_NAME, @BOOK_AUTHOR, @BOOK_PUBLISHER,
+		                    @BOOK_NOTE, @BOOK_BOUGHT_DATE, @BOOK_CLASS_ID,
+                            'A'
+	                    )
+	                    SELECT SCOPE_IDENTITY();";
+            int EmployeeId;
+            using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.Add(new SqlParameter("@BOOK_NAME", book.BookName));
+                cmd.Parameters.Add(new SqlParameter("@BOOK_AUTHOR", book.BookAuthor));
+                cmd.Parameters.Add(new SqlParameter("@BOOK_PUBLISHER", book.BookPublisher));
+                cmd.Parameters.Add(new SqlParameter("@BOOK_NOTE", book.BookNote));
+                cmd.Parameters.Add(new SqlParameter("@BOOK_BOUGHT_DATE", book.BuyDate));
+                cmd.Parameters.Add(new SqlParameter("@BOOK_CLASS_ID", book.BookClassID));
+                EmployeeId = Convert.ToInt32(cmd.ExecuteScalar());
+                conn.Close();
+            }
+            return EmployeeId;
+        }
     }
 }

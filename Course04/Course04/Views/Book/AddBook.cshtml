@@ -1,0 +1,77 @@
+﻿@model Course04.Models.Book
+
+@{
+    ViewBag.Title = "新增書籍";
+}
+
+<h2>新增書籍</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+<div class="form-horizontal">
+    <h4>Employees</h4>
+    <hr />
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.BookName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.BookName, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BookAuthor, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.BookAuthor, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.BookAuthor, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BookPublisher, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.BookPublisher, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.BookPublisher, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BookNote, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.BookNote, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.BookNote, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BuyDate, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.BuyDate, new { @type = "Date", @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.BuyDate, "", new { @type = "Date", @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.BookClass, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.DropDownListFor(model => model.BookClassID, (List<SelectListItem>)ViewBag.BookClassCodeTable, "請選擇", new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.BookClassID, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Create" class="btn btn-default" />
+        </div>
+    </div>
+
+</div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "QueryBook")
+</div>

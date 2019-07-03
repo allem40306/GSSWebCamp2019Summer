@@ -15,6 +15,9 @@ namespace Course04.Controllers
         [HttpGet()]
         public ActionResult QueryBook()
         {
+            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
+            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
+            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
             return View();
         }
 
@@ -22,9 +25,11 @@ namespace Course04.Controllers
         [HttpPost()]
         public ActionResult QueryBook(Models.BookSearchArg arg)
         {
+            Models.BookService bookService = new Models.BookService();
             ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
             ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
             ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
+            ViewBag.SearchResult =  bookService.GetBookByCondtioin(arg);
             return View();
         }
 

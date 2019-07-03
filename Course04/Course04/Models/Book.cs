@@ -12,6 +12,9 @@ namespace Course04.Models
 
         //[Required(ErrorMessage = "此欄位必填")]
 
+        [DisplayName("流水號")]
+        public string BookID { get; set; }
+
         [DisplayName("書名")]
         public string BookName { get; set; }
 
@@ -30,11 +33,20 @@ namespace Course04.Models
         [DisplayName("圖書類別")]
         public string BookClass { get; set; }
 
+        [DisplayName("圖書類別代號")]
+        public string BookClassID { get; set; }
+
         [DisplayName("借閱狀態")]
         public string BookStatus { get; set; }
 
+        [DisplayName("借閱狀態代號")]
+        public string BookStatusID { get; set; }
+
         [DisplayName("借閱人")]
         public string Keeper { get; set; }
+
+        [DisplayName("借閱人代號")]
+        public string KeeperID { get; set; }
 
 
     }

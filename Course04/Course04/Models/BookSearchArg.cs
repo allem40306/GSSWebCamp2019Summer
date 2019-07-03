@@ -13,13 +13,13 @@ namespace Course04.Models
         public string BookName { get; set; }
         
         [DisplayName("圖書類別")]
-        public string BookClassName { get; set; }
+        public string BookClassID { get; set; }
 
         [DisplayName("借閱人")]
-        public string KeeperEname { get; set; }
+        public string KeeperID { get; set; }
 
         [DisplayName("借閱狀態")]
-        public string StatusCodeName { get; set; }
+        public string StatusCodeID { get; set; }
 
     }
 }

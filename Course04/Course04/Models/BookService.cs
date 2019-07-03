@@ -21,14 +21,18 @@ namespace Course04.Models
         {
             DataTable dt = new DataTable();
             string sql = @"SELECT 
-		                        Book.BOOK_NAME AS '書名',
+		                        Book.BOOK_ID AS '流水號',
+								Book.BOOK_NAME AS '書名',
 								Book.BOOK_AUTHOR AS '作者',
 								Book.BOOK_PUBLISHER AS '出版商',
 								Book.BOOK_NOTE AS '內容簡介',
 		                        FORMAT(Book.BOOK_BOUGHT_DATE, 'yyyy/MM/dd') AS '購買日期',
 		                        BookClass.BOOK_CLASS_NAME AS '書籍類別',
+		                        BookClass.BOOK_CLASS_ID AS '書籍類別代號',
 		                        BookStatus.CODE_NAME AS '借閱狀態',
-		                        ISNULL(Mem.USER_ENAME, '') AS '借閱人'
+		                        BookStatus.CODE_ID AS '借閱狀態代號',
+		                        ISNULL(Mem.USER_ENAME, '') AS '借閱人',
+		                        ISNULL(Mem.[USER_ID], '') AS '借閱人代號'
                         FROM BOOK_DATA AS Book
                         INNER JOIN BOOK_CLASS AS BookClass
 	                        ON Book.BOOK_CLASS_ID = BookClass.BOOK_CLASS_ID
@@ -36,21 +40,21 @@ namespace Course04.Models
 	                        ON Book.BOOK_STATUS = BookStatus.CODE_ID
 	                        AND BookStatus.CODE_TYPE = 'BOOK_STATUS'
                         LEFT JOIN MEMBER_M AS Mem
-	                        ON Book.BOOK_KEEPER = Mem.USER_ID
+	                        ON Book.BOOK_KEEPER = Mem.[USER_ID]
                         WHERE 
-	                        BookClass.BOOK_CLASS_NAME LIKE @BookClassName
-	                        AND Book.BOOK_NAME = @BookName
-	                        AND Mem.USER_ENAME = @KeeperEname
-	                        AND BookStatus.CODE_NAME = @StatusCodeName
+	                        BookClass.BOOK_CLASS_ID = @BookClassID
+	                        AND Book.BOOK_NAME LIKE '%' +  @BookName + '%' 
+	                        AND (ISNULL(@KeeperID, '') = '' OR Mem.[USER_ID] = @KeeperID)
+	                        AND (ISNULL(@StatusCodeID, '') = '' OR BookStatus.CODE_ID = @StatusCodeID)
                         ORDER BY [購買日期] DESC;";
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@BookClassName", arg.BookClassName == null ? string.Empty : arg.BookClassName);
-                cmd.Parameters.Add("@BookName", arg.BookName);
-                cmd.Parameters.Add("@KeeperEname", arg.KeeperEname);
-                cmd.Parameters.Add("@StatusCodeName", arg.StatusCodeName);
+                cmd.Parameters.Add("@BookClassID", arg.BookClassID == null ? string.Empty : arg.BookClassID);
+                cmd.Parameters.Add("@BookName", arg.BookName == null ? string.Empty : arg.BookName);
+                cmd.Parameters.Add("@KeeperID", arg.KeeperID == null ? string.Empty : arg.KeeperID);
+                cmd.Parameters.Add("@StatusCodeID", arg.StatusCodeID == null ? string.Empty : arg.StatusCodeID);
                 SqlDataAdapter sqladapter = new SqlDataAdapter(cmd);
                 sqladapter.Fill(dt);
                 conn.Close();
@@ -65,6 +69,7 @@ namespace Course04.Models
             {
                 result.Add(new Book()
                 {
+                    BookID = row["流水號"].ToString(),
                     BookName = row["書名"].ToString(),
                     BookAuthor = row["作者"].ToString(),
                     BookPublisher = row["出版商"].ToString(),
@@ -78,3 +83,4 @@ namespace Course04.Models
             return result;
         }
     }
+}

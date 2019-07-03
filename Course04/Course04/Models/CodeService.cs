@@ -19,20 +19,20 @@ namespace Course04.Models
 
         public List<SelectListItem> GetStatusCodeTable()
         {
-            return this.GetCodeTable(@"SELECT FROM BOOK_CODE WHERE CODE_TYPE = 'BOOK_STATUS';");
+            return this.GetCodeTable(@"SELECT CODE_ID AS CodeId, CODE_NAME AS CodeName FROM BOOK_CODE WHERE CODE_TYPE = 'BOOK_STATUS';", true);
         }
 
         public List<SelectListItem> GetBookClassCodeTable()
         {
-            return this.GetCodeTable(@"SELECT BOOK_CLASS_ID AS CodeId, BOOK_CLASS_NAME AS CodeName FROM BOOK_CLASS;");
+            return this.GetCodeTable(@"SELECT BOOK_CLASS_ID AS CodeId, BOOK_CLASS_NAME AS CodeName FROM BOOK_CLASS;", false);
         }
 
         public List<SelectListItem> GetMemberCodeTable()
         {
-            return this.GetCodeTable(@"SELECT CODE_ID AS CodeId, CODE_NAME AS CodeName FROM BOOK_CODE WHERE CODE_TYPE = 'BOOK_STATUS';");
+            return this.GetCodeTable(@"SELECT [USER_ID] AS CodeId, USER_ENAME AS CodeName FROM MEMBER_M;", true);
         }
 
-        public List<SelectListItem> GetCodeTable(string sql) {
+        public List<SelectListItem> GetCodeTable(string sql, bool allowEmpty) {
             DataTable dt = new DataTable();
             //string sql = @"SELECT CODE_ID AS CodeId, CODE_NAME AS CodeName FROM BOOK_CODE
             //                WHERE CODE_TYPE = 'BOOK_STATUS';";
@@ -46,14 +46,22 @@ namespace Course04.Models
                 conn.Close();
             }
 
-            return this.MapCodeData(dt);
+            return this.MapCodeData(dt, allowEmpty);
         }
 
-        private List<SelectListItem> MapCodeData(DataTable dt)
+        private List<SelectListItem> MapCodeData(DataTable dt, bool allowEmpty)
         {
             List<SelectListItem> result = new List<SelectListItem>();
             foreach (DataRow row in dt.Rows)
             {
+                if (allowEmpty)
+                {
+                    result.Add(new SelectListItem()
+                    {
+                        Text = "",
+                        Value = ""
+                    });
+                }
                 result.Add(new SelectListItem()
                 {
                     Text = row["CodeName"].ToString(),

@@ -29,7 +29,7 @@ namespace Course04.Controllers
             ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
             ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
             ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
-            ViewBag.SearchResult =  bookService.GetBookByCondtioin(arg);
+            ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);
             return View();
         }
 
@@ -57,6 +57,22 @@ namespace Course04.Controllers
                 TempData["message"] = "存檔成功";
             }
             return View(book);
+        }
+
+        /// 刪除書籍
+        [HttpPost()]
+        public JsonResult DeleteBook(string bookID)
+        {
+            try
+            {
+                Models.BookService bookService = new Models.BookService();
+                bookService.DeleteBook(bookID);
+                return this.Json(true);
+            }
+            catch (Exception ex)
+            {
+                return this.Json(false);
+            }
         }
     }
 }

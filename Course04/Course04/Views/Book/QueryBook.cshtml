@@ -73,7 +73,10 @@
                     <td>@item.BuyDate</td>
                     <td>@item.BookStatus</td>
                     <td>@item.Keeper</td>
-                    <td></td>
+                    <td>
+                        <a class="DeleteBook" href="#">刪除</a>
+                        <input class="hidBookId" type="hidden" value='@item.BookID' />
+                    </td>
                 </tr>
             }
         </tbody>
@@ -82,3 +85,18 @@
 
     </div>
 }
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.DeleteBook').click(function () {
+            if (confirm("確定刪除?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Book/DeleteBook",
+                    data: "BookId=" + $(this).next().val(),
+                    dataType: "json"
+                });
+            }
+        });
+    })
+</script>

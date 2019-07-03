@@ -114,5 +114,26 @@ namespace Course04.Models
             }
             return EmployeeId;
         }
+
+        public void DeleteBook(string bookID)
+        {
+            string sql = @"Delete FROM BOOK_DATA Where BOOK_ID = @BOOKID;";
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+                {
+                    conn.Open();
+                    SqlCommand cmd = new SqlCommand(sql, conn);
+                    cmd.Parameters.Add(new SqlParameter("@BOOKID", bookID));
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

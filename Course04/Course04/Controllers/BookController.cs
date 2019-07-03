@@ -22,9 +22,9 @@ namespace Course04.Controllers
         [HttpPost()]
         public ActionResult QueryBook(Models.BookSearchArg arg)
         {
-            ViewBag.BookStatusCodeData = codeService.GetCodeTable(@"SELECT FROM BOOK_CODE WHERE CODE_TYPE = 'BOOK_STATUS';");
-            ViewBag.BookClassCodeData = codeService.GetCodeTable(@"SELECT BOOK_CLASS_ID AS CodeId, BOOK_CLASS_NAME AS CodeName FROM BOOK_CLASS;");
-            ViewBag.MemberCodeData = codeService.GetCodeTable(@"SELECT CODE_ID AS CodeId, CODE_NAME AS CodeName FROM BOOK_CODE WHERE CODE_TYPE = 'BOOK_STATUS';");
+            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
+            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
+            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
             return View();
         }
 

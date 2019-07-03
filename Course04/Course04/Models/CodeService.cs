@@ -17,7 +17,22 @@ namespace Course04.Models
                 System.Configuration.ConfigurationManager.ConnectionStrings["DBConn"].ConnectionString.ToString();
         }
 
-        public List<SelectListItem> GetBookClassTable(string sql) {
+        public List<SelectListItem> GetStatusCodeTable()
+        {
+            return this.GetCodeTable(@"SELECT FROM BOOK_CODE WHERE CODE_TYPE = 'BOOK_STATUS';");
+        }
+
+        public List<SelectListItem> GetBookClassCodeTable()
+        {
+            return this.GetCodeTable(@"SELECT BOOK_CLASS_ID AS CodeId, BOOK_CLASS_NAME AS CodeName FROM BOOK_CLASS;");
+        }
+
+        public List<SelectListItem> GetMemberCodeTable()
+        {
+            return this.GetCodeTable(@"SELECT CODE_ID AS CodeId, CODE_NAME AS CodeName FROM BOOK_CODE WHERE CODE_TYPE = 'BOOK_STATUS';");
+        }
+
+        public List<SelectListItem> GetCodeTable(string sql) {
             DataTable dt = new DataTable();
             //string sql = @"SELECT CODE_ID AS CodeId, CODE_NAME AS CodeName FROM BOOK_CODE
             //                WHERE CODE_TYPE = 'BOOK_STATUS';";

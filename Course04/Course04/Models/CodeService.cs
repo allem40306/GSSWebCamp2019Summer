@@ -32,7 +32,8 @@ namespace Course04.Models
             return this.GetCodeTable(@"SELECT [USER_ID] AS CodeId, USER_ENAME AS CodeName FROM MEMBER_M;", true);
         }
 
-        public List<SelectListItem> GetCodeTable(string sql, bool allowEmpty) {
+        public List<SelectListItem> GetCodeTable(string sql, bool allowEmpty)
+        {
             DataTable dt = new DataTable();
             //string sql = @"SELECT CODE_ID AS CodeId, CODE_NAME AS CodeName FROM BOOK_CODE
             //                WHERE CODE_TYPE = 'BOOK_STATUS';";
@@ -52,16 +53,17 @@ namespace Course04.Models
         private List<SelectListItem> MapCodeData(DataTable dt, bool allowEmpty)
         {
             List<SelectListItem> result = new List<SelectListItem>();
+            if (allowEmpty)
+            {
+                result.Add(new SelectListItem()
+                {
+                    Text = "",
+                    Value = ""
+                });
+            }
             foreach (DataRow row in dt.Rows)
             {
-                if (allowEmpty)
-                {
-                    result.Add(new SelectListItem()
-                    {
-                        Text = "",
-                        Value = ""
-                    });
-                }
+
                 result.Add(new SelectListItem()
                 {
                     Text = row["CodeName"].ToString(),

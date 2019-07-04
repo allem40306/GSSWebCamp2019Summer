@@ -115,11 +115,32 @@ namespace Course04.Models
             return EmployeeId;
         }
 
-        public void DeleteBook(string bookID)
+        public bool IsLent(string bookID)
+        {
+            DataTable dt = new DataTable();
+            string sql = @"SELECT Book.BOOK_STATUS AS 借閱狀態代號 FROM BOOK_DATA AS Book WHERE Book.BOOK_ID = @BOOKID;";
+            using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.Add(new SqlParameter("@BOOKID", bookID));
+                SqlDataAdapter sqladapter = new SqlDataAdapter(cmd);
+                sqladapter.Fill(dt);
+                conn.Close();
+            }
+            string status = dt.Rows[0]["借閱狀態代號"].ToString();
+            return status == "B";
+        }
+
+        public bool DeleteBook(string bookID)
         {
             string sql = @"Delete FROM BOOK_DATA Where BOOK_ID = @BOOKID;";
             try
             {
+                if (this.IsLent(bookID))
+                {
+                    return false;
+                }
                 using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
                 {
                     conn.Open();
@@ -128,8 +149,9 @@ namespace Course04.Models
                     cmd.ExecuteNonQuery();
                     conn.Close();
                 }
+                return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

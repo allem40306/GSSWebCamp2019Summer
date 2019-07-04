@@ -8,93 +8,104 @@
 
 @using (Html.BeginForm("QueryBook", "Book", FormMethod.Post, new { id = "QueryForm" }))
 {
-<div class="form-horizontal">
+    <div class="form-horizontal">
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(model => model.BookName, new { @class = "form-control" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.BookName, new { @class = "form-control" })
+            </div>
         </div>
-    </div>
 
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.BookClassID, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownList("BookClassID", (IEnumerable<SelectListItem>)ViewBag.BookClassCodeTable)
+        <div class="form-group">
+            @Html.LabelFor(model => model.BookClassID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("BookClassID", (IEnumerable<SelectListItem>)ViewBag.BookClassCodeTable)
+            </div>
         </div>
-    </div>
 
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.KeeperID, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownList("KeeperID", (IEnumerable<SelectListItem>)ViewBag.MemberCodeTable)
+        <div class="form-group">
+            @Html.LabelFor(model => model.KeeperID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("KeeperID", (IEnumerable<SelectListItem>)ViewBag.MemberCodeTable)
+            </div>
         </div>
-    </div>
 
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.StatusCodeID, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.DropDownList("StatusCodeID", (IEnumerable<SelectListItem>)ViewBag.BookStatusCodeTable)
+        <div class="form-group">
+            @Html.LabelFor(model => model.StatusCodeID, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("StatusCodeID", (IEnumerable<SelectListItem>)ViewBag.BookStatusCodeTable)
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <div class="col-md-2">
+        <div class="form-group">
+            <div class="col-md-2">
+            </div>
+            <div class="col-md-10">
+                <input type="submit" value="查詢" />
+                @Html.ActionLink("清除", "QueryBook")
+                @Html.ActionLink("Add", "AddBook")
+            </div>
         </div>
-        <div class="col-md-10">
-            <input type="submit" value="查詢" />
-            @Html.ActionLink("清除", "QueryBook")
-            @Html.ActionLink("Add", "AddBook")
-        </div>
-    </div>
 
-    @if (ViewBag.SearchResult != null)
-    {
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr id>
-                <th>圖書類別</th>
-                <th>書名</th>
-                <th>購書日期</th>
-                <th>借閱狀態</th>
-                <th>借閱人</th>
-                <td></td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in (List<Course04.Models.Book>)ViewBag.SearchResult)
-            {
-                <tr id='@item.BookID.'>
-                    <td>@item.BookClass</td>
-                    <td>@item.BookName</td>
-                    <td>@item.BuyDate</td>
-                    <td>@item.BookStatus</td>
-                    <td>@item.Keeper</td>
-                    <td>
-                        <a class="DeleteBook" href="#">刪除</a>
-                        <input class="hidBookId" type="hidden" value='@item.BookID' />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-     }
+        @if (ViewBag.SearchResult != null)
+        {
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr id>
+                        <th>圖書類別</th>
+                        <th>書名</th>
+                        <th>購書日期</th>
+                        <th>借閱狀態</th>
+                        <th>借閱人</th>
+                        <td></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in (List<Course04.Models.Book>)ViewBag.SearchResult)
+                    {
+                        <tr id='@item.BookID.'>
+                            <td>@item.BookClass</td>
+                            <td>@item.BookName</td>
+                            <td>@item.BuyDate</td>
+                            <td>@item.BookStatus</td>
+                            <td>@item.Keeper</td>
+                            <td>
+                                <a class="DeleteBook" href="#">刪除</a>
+                                <input class="hidBookId" type="hidden" value='@item.BookID' />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
 
     </div>
 }
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('.DeleteBook').click(function () {
+        $('.DeleteBook').click(function (e) {
+            e.preventDefault();
+            var tr = $(this).closest('tr')
             if (confirm("確定刪除?")) {
                 $.ajax({
                     type: "POST",
                     url: "/Book/DeleteBook",
                     data: "BookId=" + $(this).next().val(),
-                    dataType: "json"
+                    dataType: "json",
+                    success: function (response) {
+                        if (response) {
+                            $(tr).remove();
+                        } else {
+                            alert("借出中的書不可刪除")
+                        }                        
+                    }, error: function (error) {
+                        alert("系統發生錯誤");
+                    }
                 });
             }
         });

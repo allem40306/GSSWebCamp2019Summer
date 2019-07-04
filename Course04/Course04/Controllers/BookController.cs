@@ -66,13 +66,20 @@ namespace Course04.Controllers
             try
             {
                 Models.BookService bookService = new Models.BookService();
-                bookService.DeleteBook(bookID);
-                return this.Json(true);
+                if (bookService.DeleteBook(bookID))
+                {
+                    return this.Json(true);
+                }
+                return this.Json(false);
             }
             catch (Exception ex)
             {
                 return this.Json(false);
             }
         }
+
+        //// 明細資料
+        //[HttpGet()]
+        //public ActionResult
     }
 }

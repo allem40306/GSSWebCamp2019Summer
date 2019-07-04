@@ -51,15 +51,15 @@ namespace Course04.Models
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@BookClassID", arg.BookClassID == null ? string.Empty : arg.BookClassID);
-                cmd.Parameters.Add("@BookName", arg.BookName == null ? string.Empty : arg.BookName);
-                cmd.Parameters.Add("@KeeperID", arg.KeeperID == null ? string.Empty : arg.KeeperID);
-                cmd.Parameters.Add("@StatusCodeID", arg.StatusCodeID == null ? string.Empty : arg.StatusCodeID);
+                cmd.Parameters.Add(new SqlParameter("@BookClassID", arg.BookClassID == null ? string.Empty : arg.BookClassID));
+                cmd.Parameters.Add(new SqlParameter("@BookName", arg.BookName == null ? string.Empty : arg.BookName));
+                cmd.Parameters.Add(new SqlParameter("@KeeperID", arg.KeeperID == null ? string.Empty : arg.KeeperID));
+                cmd.Parameters.Add(new SqlParameter("@StatusCodeID", arg.StatusCodeID == null ? string.Empty : arg.StatusCodeID));
                 SqlDataAdapter sqladapter = new SqlDataAdapter(cmd);
                 sqladapter.Fill(dt);
                 conn.Close();
             }
-            return this.MapEmployeeDataToList(dt);
+            return this.MapBookDataToList(dt);
         }
 
         public List<Models.Book> GetBookByCondtioin(String bookID)
@@ -92,15 +92,15 @@ namespace Course04.Models
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
-                cmd.Parameters.Add("@BookID", bookID);
+                cmd.Parameters.Add(new SqlParameter("@BookID", bookID));
                 SqlDataAdapter sqladapter = new SqlDataAdapter(cmd);
                 sqladapter.Fill(dt);
                 conn.Close();
             }
-            return this.MapEmployeeDataToList(dt);
+            return this.MapBookDataToList(dt);
         }
 
-        private List<Book> MapEmployeeDataToList(DataTable dt)
+        private List<Book> MapBookDataToList(DataTable dt)
         {
             List<Models.Book> result = new List<Models.Book>();
             foreach (DataRow row in dt.Rows)
@@ -195,5 +195,44 @@ namespace Course04.Models
             }
         }
 
+        public List<Models.LendRecord> GetLendRecode(string bookID)
+        {
+            DataTable dt = new DataTable();
+            string sql = @"SELECT 
+	                        FORMAT(Lend.LEND_DATE, 'yyyy/MM/dd') AS 借閱日期,
+	                        Lend.KEEPER_ID AS 借閱人員編號,
+	                        Mem.USER_ENAME AS 英文姓名,
+	                        Mem.USER_CNAME AS 中文姓名
+                        FROM BOOK_LEND_RECORD AS Lend
+                        INNER JOIN MEMBER_M AS Mem
+	                        ON Lend.KEEPER_ID = Mem.USER_ID
+                        WHERE Lend.BOOK_ID = @BookID;";
+            using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.Add(new SqlParameter("@BookID", bookID));
+                SqlDataAdapter sqladapter = new SqlDataAdapter(cmd);
+                sqladapter.Fill(dt);
+                conn.Close();
+            }
+            return this.MapLendRecordToList(dt);
+        }
+
+        private List<LendRecord> MapLendRecordToList(DataTable dt)
+        {
+            List<Models.LendRecord> result = new List<Models.LendRecord>();
+            foreach (DataRow row in dt.Rows)
+            {
+                result.Add(new LendRecord()
+                {
+                    LendDate = row["借閱日期"].ToString(),
+                    KeeperID = row["借閱人員編號"].ToString(),
+                    KeeperEname = row["英文姓名"].ToString(),
+                    KeeperCname = row["中文姓名"].ToString()
+                });
+            }
+            return result;
+        }
     }
 }

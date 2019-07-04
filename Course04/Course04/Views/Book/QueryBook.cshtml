@@ -62,25 +62,28 @@
                         <th>借閱狀態</th>
                         <th>借閱人</th>
                         <td></td>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var item in (List<Course04.Models.Book>)ViewBag.SearchResult)
                     {
-                        <tr id='@item.BookID.'>
-                            <td>@item.BookClass</td>
-                            <td>
-                                @Html.ActionLink(@item.BookName, "PresentBook", new { BookID = @item.BookID });
-                                
-                            </td>
-                            <td>@item.BuyDate</td>
-                            <td>@item.BookStatus</td>
-                            <td>@item.Keeper</td>
-                            <td>
-                                <a class="DeleteBook" href="#">刪除</a>
-                                <input class="hidBookId" type="hidden" value='@item.BookID' />
-                            </td>
-                        </tr>
+                    <tr id='@item.BookID.'>
+                        <td>@item.BookClass</td>
+                        <td>
+                            @Html.ActionLink(@item.BookName, "PresentBook", new { BookID = @item.BookID });
+                        </td>
+                        <td>@item.BuyDate</td>
+                        <td>@item.BookStatus</td>
+                        <td>@item.Keeper</td>
+                        <td>
+                            <a class="DeleteBook" href="#">刪除</a>
+                            <input class="hidBookId" type="hidden" value='@item.BookID' />
+                        </td>
+                        <td>
+                            @Html.ActionLink("借閱紀錄", "QueryLendRecord", new { BookID = @item.BookID })
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>

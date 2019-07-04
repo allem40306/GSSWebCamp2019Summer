@@ -84,7 +84,15 @@ namespace Course04.Controllers
         {
             Models.BookService bookService = new Models.BookService();
             ViewBag.SearchResult = bookService.GetBookByCondtioin(BookID);
-            ViewBag.EditPermission = false;
+            return View();
+        }
+
+        // 借閱紀錄
+        [HttpGet()]
+        public ActionResult QueryLendRecord(string BookID)
+        {
+            Models.BookService bookService = new Models.BookService();
+            ViewBag.SearchResult = bookService.GetLendRecode(BookID);
             return View();
         }
     }

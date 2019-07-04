@@ -69,7 +69,10 @@
                     {
                         <tr id='@item.BookID.'>
                             <td>@item.BookClass</td>
-                            <td>@item.BookName</td>
+                            <td>
+                                @Html.ActionLink(@item.BookName, "PresentBook", new { BookID = @item.BookID });
+                                
+                            </td>
                             <td>@item.BuyDate</td>
                             <td>@item.BookStatus</td>
                             <td>@item.Keeper</td>

@@ -78,8 +78,14 @@ namespace Course04.Controllers
             }
         }
 
-        //// 明細資料
-        //[HttpGet()]
-        //public ActionResult
+        // 明細資料
+        [HttpGet()]
+        public ActionResult PresentBook(string BookID = "0")
+        {
+            Models.BookService bookService = new Models.BookService();
+            ViewBag.SearchResult = bookService.GetBookByCondtioin(BookID);
+            ViewBag.EditPermission = false;
+            return View();
+        }
     }
 }

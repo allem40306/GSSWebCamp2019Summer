@@ -42,7 +42,7 @@ namespace Course04.Models
                         LEFT JOIN MEMBER_M AS Mem
 	                        ON Book.BOOK_KEEPER = Mem.[USER_ID]
                         WHERE 
-	                        BookClass.BOOK_CLASS_ID = @BookClassID
+	                        (ISNULL(@BookClassID, '') = '' OR BookClass.BOOK_CLASS_ID = @BookClassID)
 	                        AND Book.BOOK_NAME LIKE '%' +  @BookName + '%' 
 	                        AND (ISNULL(@KeeperID, '') = '' OR Mem.[USER_ID] = @KeeperID)
 	                        AND (ISNULL(@StatusCodeID, '') = '' OR BookStatus.CODE_ID = @StatusCodeID)
@@ -62,7 +62,7 @@ namespace Course04.Models
             return this.MapBookDataToList(dt);
         }
 
-        public List<Models.Book> GetBookByCondtioin(String bookID)
+        public List<Models.Book> GetBookByID(String bookID)
         {
             DataTable dt = new DataTable();
             string sql = @"SELECT 
@@ -136,7 +136,7 @@ namespace Course04.Models
                             'A'
 	                    )
 	                    SELECT SCOPE_IDENTITY();";
-            int EmployeeId;
+            int BookID;
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
             {
                 conn.Open();
@@ -147,6 +147,37 @@ namespace Course04.Models
                 cmd.Parameters.Add(new SqlParameter("@BOOK_NOTE", book.BookNote));
                 cmd.Parameters.Add(new SqlParameter("@BOOK_BOUGHT_DATE", book.BuyDate));
                 cmd.Parameters.Add(new SqlParameter("@BOOK_CLASS_ID", book.BookClassID));
+                BookID = Convert.ToInt32(cmd.ExecuteScalar());
+                conn.Close();
+            }
+            return BookID;
+        }
+
+        public int EditBook(Models.Book book)
+        {
+            string sql = @"UPDATE BOOK_DATA
+                        SET BOOK_NAME = @BookName,
+	                        BOOK_AUTHOR = @BookAuthor,
+	                        BOOK_PUBLISHER = @BookPublisher,
+	                        BOOK_NOTE = @BookNote,
+	                        BOOK_BOUGHT_DATE = @BookBuyDate,
+	                        BOOK_CLASS_ID = @BookClassID,
+	                        BOOK_KEEPER = @KeeperID,
+	                        BOOK_STATUS = @BookStatusID
+                        WHERE BOOK_ID = @BookID;";
+            int EmployeeId;
+            using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+                cmd.Parameters.Add(new SqlParameter("@BookName", book.BookName));
+                cmd.Parameters.Add(new SqlParameter("@BookAuthor", book.BookAuthor));
+                cmd.Parameters.Add(new SqlParameter("@BookPublisher", book.BookPublisher));
+                cmd.Parameters.Add(new SqlParameter("@BookNote", book.BookNote));
+                cmd.Parameters.Add(new SqlParameter("@BookBuyDate", book.BuyDate));
+                cmd.Parameters.Add(new SqlParameter("@BookClassID", book.BookClassID));
+                cmd.Parameters.Add(new SqlParameter("@KeeperID", book.KeeperID));
+                cmd.Parameters.Add(new SqlParameter("@BookStatusID", book.BookStatusID));
                 EmployeeId = Convert.ToInt32(cmd.ExecuteScalar());
                 conn.Close();
             }
@@ -195,7 +226,7 @@ namespace Course04.Models
             }
         }
 
-        public List<Models.LendRecord> GetLendRecode(string bookID)
+        public List<Models.LendRecord> GetLendRecord(string bookID)
         {
             DataTable dt = new DataTable();
             string sql = @"SELECT 
@@ -206,7 +237,8 @@ namespace Course04.Models
                         FROM BOOK_LEND_RECORD AS Lend
                         INNER JOIN MEMBER_M AS Mem
 	                        ON Lend.KEEPER_ID = Mem.USER_ID
-                        WHERE Lend.BOOK_ID = @BookID;";
+                        WHERE Lend.BOOK_ID = @BookID
+                        ORDER BY Lend.LEND_DATE DESC;";
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
             {
                 conn.Open();

@@ -54,6 +54,32 @@ namespace Course04.Controllers
             {
                 Models.BookService bookService = new Models.BookService();
                 bookService.AddBook(book);
+                TempData["message"] = "存檔成功"; // for frontend
+            }
+            return View(book);
+        }
+
+        // 修改書籍
+        [HttpGet()]
+        public ActionResult EditBook()
+        {
+            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
+            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
+            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
+            return View(new Models.Book());
+        }
+
+        // 修改書籍
+        [HttpPost()]
+        public ActionResult EditBook(Models.Book book)
+        {
+            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
+            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
+            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
+            if (ModelState.IsValid)
+            {
+                Models.BookService bookService = new Models.BookService();
+                bookService.EditBook(book);
                 TempData["message"] = "存檔成功";
             }
             return View(book);
@@ -80,10 +106,10 @@ namespace Course04.Controllers
 
         // 明細資料
         [HttpGet()]
-        public ActionResult PresentBook(string BookID = "0")
+        public ActionResult PresentBook(string BookID)
         {
             Models.BookService bookService = new Models.BookService();
-            ViewBag.SearchResult = bookService.GetBookByCondtioin(BookID);
+            ViewBag.SearchResult = bookService.GetBookByID(BookID);
             return View();
         }
 
@@ -92,7 +118,7 @@ namespace Course04.Controllers
         public ActionResult QueryLendRecord(string BookID)
         {
             Models.BookService bookService = new Models.BookService();
-            ViewBag.SearchResult = bookService.GetLendRecode(BookID);
+            ViewBag.SearchResult = bookService.GetLendRecord(BookID);
             return View();
         }
     }

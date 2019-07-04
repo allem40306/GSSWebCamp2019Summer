@@ -35,8 +35,6 @@ namespace Course04.Models
         public List<SelectListItem> GetCodeTable(string sql, bool allowEmpty)
         {
             DataTable dt = new DataTable();
-            //string sql = @"SELECT CODE_ID AS CodeId, CODE_NAME AS CodeName FROM BOOK_CODE
-            //                WHERE CODE_TYPE = 'BOOK_STATUS';";
             using (SqlConnection conn = new SqlConnection(this.GetDBConnectionString()))
             {
                 conn.Open();
@@ -53,14 +51,6 @@ namespace Course04.Models
         private List<SelectListItem> MapCodeData(DataTable dt, bool allowEmpty)
         {
             List<SelectListItem> result = new List<SelectListItem>();
-            if (allowEmpty)
-            {
-                result.Add(new SelectListItem()
-                {
-                    Text = "",
-                    Value = ""
-                });
-            }
             foreach (DataRow row in dt.Rows)
             {
 

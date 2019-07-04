@@ -21,7 +21,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.BookClassID, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("BookClassID", (IEnumerable<SelectListItem>)ViewBag.BookClassCodeTable)
+                @Html.DropDownList("BookClassID", (IEnumerable<SelectListItem>)ViewBag.BookClassCodeTable, "請選擇")
             </div>
         </div>
 
@@ -29,7 +29,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.KeeperID, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("KeeperID", (IEnumerable<SelectListItem>)ViewBag.MemberCodeTable)
+                @Html.DropDownList("KeeperID", (IEnumerable<SelectListItem>)ViewBag.MemberCodeTable, "請選擇")
             </div>
         </div>
 
@@ -37,7 +37,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.StatusCodeID, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("StatusCodeID", (IEnumerable<SelectListItem>)ViewBag.BookStatusCodeTable)
+                @Html.DropDownList("StatusCodeID", (IEnumerable<SelectListItem>)ViewBag.BookStatusCodeTable, "請選擇")
             </div>
         </div>
 
@@ -71,7 +71,7 @@
                     <tr id='@item.BookID.'>
                         <td>@item.BookClass</td>
                         <td>
-                            @Html.ActionLink(@item.BookName, "PresentBook", new { BookID = @item.BookID });
+                            @Html.ActionLink(@item.BookName, "PresentBook", new { BookID = @item.BookID })
                         </td>
                         <td>@item.BuyDate</td>
                         <td>@item.BookStatus</td>

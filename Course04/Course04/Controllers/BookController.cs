@@ -81,10 +81,10 @@ namespace Course04.Controllers
             if (ModelState.IsValid)
             {
                 Models.BookService bookService = new Models.BookService();
-                bookService.EditBook(book);
+                string BookID = bookService.EditBook(book).ToString();
+                ViewBag.SearchResult = bookService.GetBookByID(BookID);
                 TempData["message"] = "存檔成功";
             }
-            ViewBag.SearchResult = bookService.GetBookByID(BookID);
             return View(book);
         }
 

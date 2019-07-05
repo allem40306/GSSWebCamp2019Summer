@@ -1,123 +1,179 @@
-﻿@model Course04.Models.BookSearchArg
+﻿<h2>查詢書籍</h2>
 
-@{
-    ViewBag.Title = "查詢書籍";
-}
+<form id="query_table">
+    <table class="fieldlist">
+        <tr>
+            <td>
+                <label for="book_name">書名</label>
+            </td>
+            <td>
+                <input id="book_name" />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>圖書類別</label>
+            </td>
+            <td>
+                <select id="book_class"></select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>借閱人</label>
+            </td>
+            <td>
+                <select id="book_keeper"></select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>借閱狀態</label>
+            </td>
+            <td>
+                <select id="book_state"></select>
+            </td>
+        </tr>
+    </table>
+    <button id="summit_search">查詢</button>
+    <button id="addbook" type="button" onclick="location.href = './AddBook';">add</button>
+    <button id="clear_search" type="button">清除</button>
+</form>
 
-<h2>查詢書籍</h2>
+<div id="result_grid"></div>
 
-@using (Html.BeginForm("QueryBook", "Book", FormMethod.Post, new { id = "QueryForm" }))
-{
-    <div class="form-horizontal">
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BookName, new { @class = "form-control" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.BookClassID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("BookClassID", (IEnumerable<SelectListItem>)ViewBag.BookClassCodeTable, "請選擇")
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.KeeperID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("KeeperID", (IEnumerable<SelectListItem>)ViewBag.MemberCodeTable, "請選擇")
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.StatusCodeID, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("StatusCodeID", (IEnumerable<SelectListItem>)ViewBag.BookStatusCodeTable, "請選擇")
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-2">
-            </div>
-            <div class="col-md-10">
-                <input type="submit" value="查詢" />
-                @Html.ActionLink("清除", "QueryBook")
-                @Html.ActionLink("Add", "AddBook")
-            </div>
-        </div>
-
-        @if (ViewBag.SearchResult != null)
-        {
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr id>
-                        <th>圖書類別</th>
-                        <th>書名</th>
-                        <th>購書日期</th>
-                        <th>借閱狀態</th>
-                        <th>借閱人</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in (List<Course04.Models.Book>)ViewBag.SearchResult)
-                    {
-                    <tr id='@item.BookID.'>
-                        <td>@item.BookClass</td>
-                        <td>
-                            @Html.ActionLink(@item.BookName, "PresentBook", new { BookID = @item.BookID })
-                        </td>
-                        <td>@item.BuyDate</td>
-                        <td>@item.BookStatus</td>
-                        <td>@item.Keeper</td>
-                        <td>
-                            <a class="DeleteBook" href="#">刪除</a>
-                            <input class="hidBookId" type="hidden" value='@item.BookID' />
-                        </td>
-                        <td>
-                            @Html.ActionLink("借閱紀錄", "QueryLendRecord", new { BookID = @item.BookID })
-                        </td>
-                        <td>
-                            @Html.ActionLink("修改", "EditBook", new { BookID = @item.BookID })
-                        </td>
-                    </tr>
-                    }
-                </tbody>
-            </table>
-        }
-
-    </div>
-}
-
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('.DeleteBook').click(function (e) {
-            e.preventDefault();
-            var tr = $(this).closest('tr')
-            if (confirm("確定刪除?")) {
-                $.ajax({
-                    type: "POST",
-                    url: "/Book/DeleteBook",
-                    data: "BookId=" + $(this).next().val(),
-                    dataType: "json",
-                    success: function (response) {
-                        if (response) {
-                            $(tr).remove();
-                        } else {
-                            alert("借出中的書不可刪除")
-                        }                        
-                    }, error: function (error) {
-                        alert("系統發生錯誤");
-                    }
-                });
+<script>
+    $("#book_class").kendoDropDownList({
+        dataTextField: "Text",
+        dataValueField: "Value",
+        dataSource: {
+            transport: {
+                read: {
+                    url: "GetBookClassCodeTable",
+                    method: "post"
+                }
             }
-        });
+        },
+        optionLabel: "請選擇",
+        index: 0,
+    });
+    $("#book_keeper").kendoDropDownList({
+        dataTextField: "Text",
+        dataValueField: "Value",
+        dataSource: {
+            transport: {
+                read: {
+                    url: "GetMemberCodeTable",
+                    method: "post"
+                }
+            }
+        },
+        optionLabel: "請選擇",
+        index: 0,
+    });
+    $("#book_state").kendoDropDownList({
+        dataTextField: "Text",
+        dataValueField: "Value",
+        dataSource: {
+            transport: {
+                read: {
+                    url: "GetStatusCodeTable",
+                    method: "post"
+                }
+            }
+        },
+        optionLabel: "請選擇",
+        index: 0,
+    });
+    var searchArg = {
+        "BookName": $("#book_name").val(),
+        "BookClassID": $("#book_class").val(),
+        "KeeperID": $("#book_keeper").val(),
+        "StatusCodeID": $("#book_state").val()
+    };
+    var grid = $("#result_grid").kendoGrid({
+        dataSource: {
+            transport: {
+                read: {
+                    data: searchArg,
+                    url: "QueryBook",
+                    method: "post",
+                    datatype: "json"
+                }
+            },
+            schema: {
+                model: {
+                    fields: {
+                        BookID: { type: "string" },
+                        BookName: { type: "string" },
+                        BookAuthor: { type: "string" },
+                        BookPublisher: { type: "string" },
+                        BookNote: { type: "string" },
+                        BuyDate: { type: "string" },
+                        BookClass: { type: "string" },
+                        BookStatus: { type: "string" },
+                        Keeper: { type: "string" },
+                    }
+                }
+            },
+            pagesize: 20,
+        },
+        height: 550,
+        sortable: true,
+        pageable: {
+            input: true,
+            numeric: false
+        },
+        columns: [
+            { field: "BookID", title: "流水號", width: "10%" },
+            { field: "BookName", title: "書名", width: "10%" },
+            { field: "BookClass", title: "圖書類別", width: "10%" },
+            { field: "BookAuthor", title: "作者", width: "15%" },
+            { field: "BuyDate", title: "購買日期", width: "15%" },
+            { field: "BookStatus", title: "借閱狀態", width: "15%" },
+            { field: "Keeper", title: "借閱人", width: "15%" },
+            { command: { text: "刪除", click: deleteBook }, title: " ", width: "120px" }
+        ]
+    });
+    $("#summit_search").click(function (e) {
+        e.preventDefault();
+        var dataSource = grid.data("kendoGrid").dataSource;
+        dataSource.filter(
+            [
+                { field: "BookName", operator: "contains", value: $("#book_name").val() },
+                { field: "BookClass", operator: "contains", value: ($("#book_class").data("kendoDropDownList").text() == "請選擇" ? "" : $("#book_class").data("kendoDropDownList").text()) },
+                { field: "Keeper", operator: "contains", value: ($("#book_keeper").data("kendoDropDownList").text() == "請選擇" ? "" : $("#book_keeper").data("kendoDropDownList").text()) },
+                { field: "BookStatus", operator: "contains", value: ($("#book_state").data("kendoDropDownList").text() == "請選擇" ? "" : $("#book_state").data("kendoDropDownList").text()) }
+            ]
+        );
+    });
+    function deleteBook(e) {
+        e.preventDefault();
+        var tr = this.dataItem($(e.currentTarget).closest("tr"));
+        if (confirm("確定刪除?")) {
+            $.ajax({
+                type: "POST",
+                url: "/Book/DeleteBook",
+                data: { "bookID": tr.BookID },
+                dataType: "json",
+                success: function (response) {
+                    if (response) {
+                        alert("已刪除書籍");
+                        var dataSource = grid.data("kendoGrid").dataSource;
+                        dataSource.remove(tr);
+                        //dataSource.sync();
+                    } else {
+                        alert("借出中的書不可刪除")
+                    }
+                }, error: function (error) {
+                    alert("系統發生錯誤");
+                }
+            });
+        }
+    }
+
+    $("#clear_search").click(function (e) {
+        e.preventDefault();
+        location.href = './QueryBook';
     })
 </script>

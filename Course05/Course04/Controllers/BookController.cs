@@ -15,22 +15,15 @@ namespace Course04.Controllers
         [HttpGet()]
         public ActionResult QueryBook()
         {
-            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
-            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
-            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
             return View();
         }
 
         // 查詢書籍
         [HttpPost()]
-        public ActionResult QueryBook(Models.BookSearchArg arg)
+        public JsonResult QueryBook(Models.BookSearchArg arg)
         {
             Models.BookService bookService = new Models.BookService();
-            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
-            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
-            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
-            ViewBag.SearchResult = bookService.GetBookByCondtioin(arg);
-            return View();
+            return this.Json(bookService.GetBookByCondtioin(arg));
         }
 
         // 新增書籍
@@ -103,7 +96,7 @@ namespace Course04.Controllers
             }
             catch (Exception ex)
             {
-                return this.Json(false);
+                return this.Json(null);
             }
         }
 
@@ -124,5 +117,24 @@ namespace Course04.Controllers
             ViewBag.SearchResult = bookService.GetLendRecord(BookID);
             return View();
         }
+
+        [HttpPost]
+        public JsonResult GetBookClassCodeTable()
+        {
+            return Json(this.codeService.GetBookClassCodeTable());
+        }
+
+        [HttpPost]
+        public JsonResult GetMemberCodeTable()
+        {
+            return Json(this.codeService.GetMemberCodeTable());
+        }
+
+        [HttpPost]
+        public JsonResult GetStatusCodeTable()
+        {
+            return Json(this.codeService.GetStatusCodeTable());
+        }
+
     }
 }

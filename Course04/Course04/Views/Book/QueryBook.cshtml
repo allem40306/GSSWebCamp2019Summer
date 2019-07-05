@@ -63,6 +63,7 @@
                         <th>借閱人</th>
                         <td></td>
                         <td></td>
+                        <td></td>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,6 +83,9 @@
                         </td>
                         <td>
                             @Html.ActionLink("借閱紀錄", "QueryLendRecord", new { BookID = @item.BookID })
+                        </td>
+                        <td>
+                            @Html.ActionLink("修改", "EditBook", new { BookID = @item.BookID })
                         </td>
                     </tr>
                     }

@@ -61,11 +61,13 @@ namespace Course04.Controllers
 
         // 修改書籍
         [HttpGet()]
-        public ActionResult EditBook()
+        public ActionResult EditBook(string BookID)
         {
+            Models.BookService bookService = new Models.BookService();
             ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
             ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
             ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
+            ViewBag.SearchResult = bookService.GetBookByID(BookID);
             return View(new Models.Book());
         }
 
@@ -82,6 +84,7 @@ namespace Course04.Controllers
                 bookService.EditBook(book);
                 TempData["message"] = "存檔成功";
             }
+            ViewBag.SearchResult = bookService.GetBookByID(BookID);
             return View(book);
         }
 

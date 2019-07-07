@@ -107,11 +107,17 @@ namespace Course04.Controllers
 
         // 借閱紀錄
         [HttpGet()]
-        public ActionResult QueryLendRecord(string BookID)
+        public ActionResult QueryLendRecord()
+        {
+            return View();
+        }
+
+        // 借閱紀錄
+        [HttpPost()]
+        public JsonResult QueryLendRecord(string BookID)
         {
             Models.BookService bookService = new Models.BookService();
-            ViewBag.SearchResult = bookService.GetLendRecord(BookID);
-            return View();
+            return this.Json(bookService.GetLendRecord(BookID));
         }
 
         [HttpPost]

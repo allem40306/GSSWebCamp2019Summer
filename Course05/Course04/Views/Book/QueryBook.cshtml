@@ -126,14 +126,14 @@
         },
         columns: [
             { field: "BookID", title: "流水號", width: "10%" },
-            { field: "BookName", template: "<a href='./PresentBook?BookID=${BookID}'>${BookName}</a>", width: "10%" },
-            { field: "BookClass", title: "圖書類別", width: "10%" },
+            { field: "BookName", template: "<a href='./PresentBook?BookID=${BookID}'>${BookName}</a>", width: "25%" },
+            { field: "BookClass", title: "圖書類別", width: "15%" },
             { field: "BookAuthor", title: "作者", width: "15%" },
             { field: "BuyDate", title: "購買日期", width: "15%" },
-            { field: "BookStatus", title: "借閱狀態", width: "15%" },
-            { field: "Keeper", title: "借閱人", width: "15%" },
+            { field: "BookStatus", title: "借閱狀態", width: "10%" },
+            { field: "Keeper", title: "借閱人", width: "10%" },
             { command: { text: "刪除", click: deleteBook }, title: " ", width: "120px" },
-            //{ command: { text: "借閱紀錄", click: presentBook }, title: " ", width: "120px" }
+            { command: { text: "借閱紀錄", click: queryBookLendRecord }, title: " ", width: "150px" }
         ]
     });
     $("#summit_search").click(function (e) {
@@ -172,11 +172,11 @@
             });
         }
     }
-    //function presentBook(e) {
-    //    var tr = this.dataItem($(e.currentTarget).closest("tr"));
-    //    //console.log(tr.BookID);
-    //    window.location = "./PresentBook?BookID=" + tr.BookID;
-    //}
+    function queryBookLendRecord(e) {
+        var tr = this.dataItem($(e.currentTarget).closest("tr"));
+        //console.log(tr.BookID);
+        window.location = "./QueryLendRecord?BookID=" + tr.BookID;
+    }
     $("#clear_search").click(function (e) {
         e.preventDefault();
         location.href = './QueryBook';

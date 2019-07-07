@@ -92,11 +92,17 @@ namespace Course04.Controllers
 
         // 明細資料
         [HttpGet()]
-        public ActionResult PresentBook(string BookID)
+        public ActionResult PresentBook()
+        {
+            return View();
+        }
+
+        // 明細資料
+        [HttpPost()]
+        public JsonResult PresentBook(string BookID)
         {
             Models.BookService bookService = new Models.BookService();
-            ViewBag.SearchResult = bookService.GetBookByID(BookID);
-            return View();
+            return this.Json(bookService.GetBookByID(BookID));
         }
 
         // 借閱紀錄

@@ -9,7 +9,7 @@
     <table class="fieldlist">
         <tr>
             <td>
-                <label for="book_name">書名</label>
+                <label>書名</label>
             </td>
             <td>
                 <input id="book_name" type="text" required/>
@@ -80,7 +80,6 @@
     });
 
     $("#add_button").click(function () {
-        console.log("add");
         var validator = $("#add_table").kendoValidator().data("kendoValidator");
         if (validator.validate()) {
             var data = {

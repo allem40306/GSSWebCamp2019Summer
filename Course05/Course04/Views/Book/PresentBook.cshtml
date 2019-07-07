@@ -6,48 +6,68 @@
 
 <h2>書籍資訊</h2>
 
-<div class="form-horizontal">
+<div id="result_grid"></div>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(model => model.BookName, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookName, @readonly = "readonly" })
-        </div>
-    </div>
+<script>
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.BookAuthor, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(model => model.BookAuthor, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookAuthor, @readonly = "readonly" })
-        </div>
-    </div>
+    function query_string(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) { return pair[1]; }
+        }
+        return (false);
+    }
+    $(document).ready(function () {
+        //Getting the parameter-
+        var BookID = query_string('BookID');
+        var searchArg = {
+            "BookID": query_string('BookID')
+        };
+        var grid = $("#result_grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        data: searchArg,
+                        url: "PresentBook",
+                        method: "post",
+                        datatype: "json"
+                    }
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            BookID: { type: "string" },
+                            BookName: { type: "string" },
+                            BookAuthor: { type: "string" },
+                            BookPublisher: { type: "string" },
+                            BookNote: { type: "string" },
+                            BuyDate: { type: "string" },
+                            BookClass: { type: "string" },
+                            BookStatus: { type: "string" },
+                            Keeper: { type: "string" },
+                        }
+                    }
+                },
+                pagesize: 20,
+            },
+            height: 550,
+            sortable: true,
+            pageable: {
+                input: true,
+                numeric: false
+            },
+            columns: [
+                { field: "BookID", title: "流水號", width: "10%" },
+                { field: "BookName", title: "書名", width: "10%" },
+                { field: "BookClass", title: "圖書類別", width: "10%" },
+                { field: "BookAuthor", title: "作者", width: "15%" },
+                { field: "BuyDate", title: "購買日期", width: "15%" },
+                { field: "BookStatus", title: "借閱狀態", width: "15%" },
+                { field: "Keeper", title: "借閱人", width: "15%" },
+            ]
+        });
+    });
 
-    <div class="form-group">
-        @Html.LabelFor(model => model.BookPublisher, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(model => model.BookPublisher, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookPublisher, @readonly = "readonly" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.BookNote, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(model => model.BookNote, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookNote, @readonly = "readonly" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.BuyDate, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(model => model.BuyDate, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BuyDate, @readonly = "readonly" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        @Html.LabelFor(model => model.BookClass, htmlAttributes: new { @class = "control-label col-md-2" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(model => model.BookClass, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookClass, @readonly = "readonly" })
-        </div>
-    </div>
-
-</div>
+</script>

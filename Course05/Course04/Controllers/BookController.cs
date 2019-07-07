@@ -30,26 +30,16 @@ namespace Course04.Controllers
         [HttpGet()]
         public ActionResult AddBook()
         {
-            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
-            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
-            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
             return View(new Models.Book());
         }
 
         // 新增書籍
         [HttpPost()]
-        public ActionResult AddBook(Models.Book book)
+        public JsonResult AddBook(Models.Book book)
         {
-            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
-            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
-            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
-            if (ModelState.IsValid)
-            {
-                Models.BookService bookService = new Models.BookService();
-                bookService.AddBook(book);
-                TempData["message"] = "存檔成功"; // for frontend
-            }
-            return View(book);
+            Models.BookService bookService = new Models.BookService();
+            TempData["message"] = "存檔成功"; // for frontend
+            return this.Json(bookService.AddBook(book));
         }
 
         // 修改書籍

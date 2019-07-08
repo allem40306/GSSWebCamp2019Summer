@@ -1,56 +1,242 @@
-﻿@model Course04.Models.Book
+﻿
 @{
     ViewBag.Title = "修改書籍";
 }
 
 <h2>修改書籍</h2>
 
-@using (Html.BeginForm("QueryBook", "Book", FormMethod.Post, new { id = "QueryForm" }))
-{
+<form id="add_table">
+    <table class="fieldlist">
+        <tr>
+            <td>
+                <label>書名</label>
+            </td>
+            <td>
+                <input id="book_name" type="text" required />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>作者</label>
+            </td>
+            <td>
+                <input id="book_author" type="text" required></input>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>出版商</label>
+            </td>
+            <td>
+                <input id="book_publisher" type="text" required></input>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>內容簡介</label>
+            </td>
+            <td>
+                <textarea id="book_note" type="text" required></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>購書日期</label>
+            </td>
+            <td>
+                <input id="buy_date" required></input>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>圖書類別</label>
+            </td>
+            <td>
+                <select id="book_class" required></select>
+            </td>
+        </tr>
 
-    <div class="form-horizontal">
+        <tr>
+            <td>
+                <label>借閱狀態</label>
+            </td>
+            <td>
+                <select id="book_state" required></select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>借閱人</label>
+            </td>
+            <td>
+                <select id="book_keeper" required></select>
+            </td>
+        </tr>
+    </table>
+    <input id="update_button" type="button" value="存檔" />
+    <input id="delete_button" type="button" value="刪除" />
+</form>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.BookName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BookName, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookName })
-            </div>
-        </div>
+<script>
+    function query_string(variable) {
+        var query = window.location.search.substring(1);
+        var vars = query.split("&");
+        for (var i = 0; i < vars.length; i++) {
+            var pair = vars[i].split("=");
+            if (pair[0] == variable) { return pair[1]; }
+        }
+        return (false);
+    }
+    $(document).ready(function () {
+        //Getting the parameter-
+        var BookID = query_string('BookID');
+        var searchArg = {
+            "BookID": query_string('BookID')
+        };
+        $.ajax({
+            type: "POST",
+            url: "./PresentBook",
+            data: searchArg,
+            dataType: "json",
+            success: function (e) {
+                if (e) {
+                    $("#book_name").val(e[0].BookName);
+                    $("#book_author").val(e[0].BookAuthor);
+                    $("#book_publisher").val(e[0].BookPublisher);
+                    $("#book_note").val(e[0].BookNote);
+                    $("#buy_date").kendoDatePicker({
+                        value: kendo.parseDate(e[0].BuyDate, "yyyy/MM/dd"),
+                        format: 'yyyy/MM/dd',
+                        max: new Date(),
+                        dateInput: true
+                    });
+                    $("#buy_date").data("kendoDatePicker");
+                    $("#book_class").kendoDropDownList({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "GetBookClassCodeTable",
+                                    method: "post"
+                                }
+                            }
+                        },
+                        value: e[0].BookClassID,
+                    });
+                    $("#book_keeper").kendoDropDownList({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "GetMemberCodeTable",
+                                    method: "post"
+                                }
+                            }
+                        },
+                        optionLabel: "請選擇",
+                        value: e[0].KeeperID
+                    });
+                    $("#book_state").kendoDropDownList({
+                        dataTextField: "Text",
+                        dataValueField: "Value",
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "GetStatusCodeTable",
+                                    method: "post"
+                                }
+                            }
+                        },
+                        optionLabel: "請選擇",
+                        value: e[0].BookStatusID
+                    });
+                    var status = $("#book_state").data("kendoDropDownList").value();
+                    console.log(status);
+                    if (status == "A" || status == "U") {
+                        $("#book_keeper").removeAttr("required");
+                        $("#book_keeper").data("kendoDropDownList").value("");
+                        $("#book_keeper").data("kendoDropDownList").readonly();
+                    }
+                    if (status == "B" || status == "C") {
+                        $("#book_keeper").attr("required", true);
+                        $("#book_keeper").data("kendoDropDownList").readonly(false);
+                    }
+                }
+            }, error: function (error) {
+                alert("系統發生錯誤");
+            }
+        });
+        $("#book_state").change(function (e) {
+            var status = $("#book_state").data("kendoDropDownList").value();
+            console.log(status);
+            if (status == "A" || status == "U") {
+                $("#book_keeper").removeAttr("required");
+                $("#book_keeper").data("kendoDropDownList").value("");
+                $("#book_keeper").data("kendoDropDownList").readonly();
+            }
+            if (status == "B" || status == "C") {
+                $("#book_keeper").attr("required", true);
+                $("#book_keeper").data("kendoDropDownList").readonly(false);
+            }
+        });
+        $("#update_button").click(function () {
+            var validator = $("#add_table").kendoValidator().data("kendoValidator");
+            var buyDate_Picker = $("#buy_date").data("kendoDatePicker");
+            var bookClass_List = $("#book_class").data("kendoDropDownList");
+            var bookKeeper_List = $("#book_keeper").data("kendoDropDownList");
+            var bookState_List = $("#book_state").data("kendoDropDownList");
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.BookAuthor, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BookAuthor, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookAuthor })
-            </div>
-        </div>
+            if (validator.validate()) {
+                var book = {
+                    BookID: query_string('BookID'),
+                    BookName: $("#book_name").val(),
+                    BookAuthor: $("#book_author").val(),
+                    BookPublisher: $("#book_publisher").val(),
+                    BookNote: $("#book_note").val().replace(/<[Bb][Rr]>/g, ""),
+                    BuyDate: kendo.toString(buyDate_Picker.value(), "yyyy/MM/dd"),
+                    BookClassID: bookClass_List.value(),
+                    BookStatusID: bookState_List.value(),
+                    KeeperID: bookKeeper_List.value()
+                };
+                $.ajax({
+                    type: "POST",
+                    url: "/Book/EditBook",
+                    dataType: "json",
+                    data: book,
+                    success: function (e) {
+                        location.href = "./QueryBook";
+                        alert("成功修改");
+                    }, error: function (e) {
+                        console.log(e);
+                    }
+                });
+            } else {
+                alert("修改失敗");
+            }
+        });
+        $("#delete_button").click(function (e) {
+            e.preventDefault();
+            if (confirm("確定刪除?")) {
+                $.ajax({
+                    type: "POST",
+                    url: "/Book/DeleteBook",
+                    data: { "bookID": query_string('BookID') },
+                    dataType: "json",
+                    success: function (response) {
+                        if (response) {
+                            alert("已刪除書籍");
+                            location.href = "/Book/QueryBook";
+                        } else {
+                            alert("借出中的書不可刪除")
+                        }
+                    }, error: function (error) {
+                        alert("系統發生錯誤");
+                    }
+                });
+            }
+        });
+    });
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.BookPublisher, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BookPublisher, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookPublisher })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.BookNote, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BookNote, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookNote })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.BuyDate, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BuyDate, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BuyDate })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.BookClass, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.BookClass, new { @class = "form-control", @Value = ViewBag.SearchResult[0].BookClass })
-            </div>
-        </div>
-
-    </div>
-}
+</script>

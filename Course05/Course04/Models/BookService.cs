@@ -114,8 +114,11 @@ namespace Course04.Models
                     BookNote = row["內容簡介"].ToString(),
                     BuyDate = row["購買日期"].ToString(),
                     BookClass = row["書籍類別"].ToString(),
+                    BookClassID = row["書籍類別代號"].ToString(),
                     BookStatus = row["借閱狀態"].ToString(),
-                    Keeper = row["借閱人"].ToString()
+                    BookStatusID = row["借閱狀態代號"].ToString(),
+                    Keeper = row["借閱人"].ToString(),
+                    KeeperID = row["借閱人代號"].ToString()
                 });
             }
             return result;
@@ -176,8 +179,9 @@ namespace Course04.Models
                 cmd.Parameters.Add(new SqlParameter("@BookNote", book.BookNote));
                 cmd.Parameters.Add(new SqlParameter("@BookBuyDate", book.BuyDate));
                 cmd.Parameters.Add(new SqlParameter("@BookClassID", book.BookClassID));
-                cmd.Parameters.Add(new SqlParameter("@KeeperID", book.KeeperID));
+                cmd.Parameters.Add(new SqlParameter("@KeeperID", (book.KeeperID == null ? string.Empty : book.KeeperID)));
                 cmd.Parameters.Add(new SqlParameter("@BookStatusID", book.BookStatusID));
+                cmd.Parameters.Add(new SqlParameter("@BookID", book.BookID));
                 EmployeeId = Convert.ToInt32(cmd.ExecuteScalar());
                 conn.Close();
             }

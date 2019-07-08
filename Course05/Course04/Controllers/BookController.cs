@@ -44,33 +44,27 @@ namespace Course04.Controllers
 
         // 修改書籍
         [HttpGet()]
-        public ActionResult EditBook(string BookID)
+        public ActionResult EditBook()
         {
-            Models.BookService bookService = new Models.BookService();
-            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
-            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
-            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
-            ViewBag.SearchResult = bookService.GetBookByID(BookID);
-            return View(new Models.Book());
+            return View();
         }
+
+        //// 修改書籍
+        //[HttpPost()]
+        //public JsonResult EditBook(string BookID)
+        //{
+        //    Models.BookService bookService = new Models.BookService();
+        //    return this.Json(bookService.GetBookByID(BookID));
+        //}
 
         // 修改書籍
         [HttpPost()]
-        public ActionResult EditBook(Models.Book book)
+        public JsonResult EditBook(Models.Book book)
         {
-            ViewBag.BookStatusCodeTable = codeService.GetStatusCodeTable();
-            ViewBag.BookClassCodeTable = codeService.GetBookClassCodeTable();
-            ViewBag.MemberCodeTable = codeService.GetMemberCodeTable();
-            if (ModelState.IsValid)
-            {
-                Models.BookService bookService = new Models.BookService();
-                string BookID = bookService.EditBook(book).ToString();
-                ViewBag.SearchResult = bookService.GetBookByID(BookID);
-                TempData["message"] = "存檔成功";
-            }
-            return View(book);
+            Models.BookService bookService = new Models.BookService();
+            return this.Json(bookService.EditBook(book));
         }
-
+        
         /// 刪除書籍
         [HttpPost()]
         public JsonResult DeleteBook(string bookID)

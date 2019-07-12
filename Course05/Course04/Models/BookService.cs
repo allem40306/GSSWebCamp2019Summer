@@ -202,7 +202,7 @@ namespace Course04.Models
                 conn.Close();
             }
             string status = dt.Rows[0]["借閱狀態代號"].ToString();
-            return status == "B";
+            return (status == "B" || status == "C");
         }
 
         public bool DeleteBook(string bookID)
